@@ -6,18 +6,22 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h5 class="text-uppercase text-center">Login</h5>
+                <div class="alert alert-danger" v-if="errors.length > 0">
+                    <span v-for="error in errors" :key="errors.indexOf(error)"> {{error}}</span>
+                </div>
+                <br/>
                 <form>
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Username">
+                        <input type="email" class="form-control" placeholder="Email" v-model="email">
                     </div>
 
                     <div class="form-group">
-                        <input type="password" class="form-control" placeholder="Password">
+                        <input type="password" class="form-control" placeholder="Password" v-model="password">
                     </div>
 
                     <div class="form-group flexbox py-10">
                         <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" checked>
+                            <input type="checkbox" class="custom-control-input" v-model="remember">
                             <span class="custom-control-indicator"></span>
                             <span class="custom-control-description">Remember me</span>
                         </label>
@@ -26,7 +30,7 @@
                     </div>
 
                     <div class="form-group">
-                        <button class="btn btn-bold btn-block btn-primary" type="submit">Login</button>
+                        <button class="btn btn-bold btn-block btn-primary" type="button" :disabled="!isValidLogin" @click="attemptLogin()">Login</button>
                     </div>
                 </form>
 
@@ -46,9 +50,49 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
-        mounted() {
-            console.log('Component mounted.')
+        data() {
+            return{
+                email:'',
+                password:'',
+                remember:true,
+                errors:[],
+                loading:false
+            }
+        },
+        methods:{
+            isValidEmail(){
+                if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email))
+                {
+                    return (true)
+                }
+                else {
+                    return (false)
+                }
+            },
+            attemptLogin(){
+                this.loading = true
+                axios.post('/login',{
+                    email:this.email,
+                    password:this.password,
+                    remember:this.remember
+                }).then(resp => {
+                    location.reload()
+                }).catch(error => {
+                    this.loading = false
+                    if(error.response.status == 422){
+                        this.errors.push('Wrong Email Or Password');
+                    }else{
+                        this.errors.push('Something Wrong Please Try Again');
+                    }
+                })
+            }
+        },
+        computed:{
+            isValidLogin(){
+                return this.isValidEmail() && this.password && !this.loading
+            }
         }
     }
 </script>
