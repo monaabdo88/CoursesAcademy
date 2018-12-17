@@ -13,8 +13,9 @@
 
 Route::get('/', function () {
     return view('index');
+    //return new App\Mail\ConfirmYourEmail();
 });
-
+Route::get('register/confirm/','ConfirmEmailController@index')->name('confirm-email');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

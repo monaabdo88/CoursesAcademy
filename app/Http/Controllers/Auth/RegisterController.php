@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Mail\ConfirmYourEmail;
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -65,7 +68,21 @@ class RegisterController extends Controller
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'username' => str_slug($data['name']),
             'password' => bcrypt($data['password']),
+            'confirm_token' => str_random(25)
         ]);
+    }
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
+    {
+        Mail::to($user)->send(new ConfirmYourEmail($user));
+        return redirect($this->redirectPath());
     }
 }

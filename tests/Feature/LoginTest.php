@@ -11,6 +11,15 @@ class LoginTest extends TestCase
 {
 
     use RefreshDatabase;
+    public function testLoginUserSuccess(){
+        $user = factory(User::class)->create();
+        $this->postJson('/login',[
+            'email' => $user->email,
+            'password' => 'secret'
+        ])->assertStatus(200)->assertJson([
+            'status' => 'ok'
+        ])->assertSessionHas('success','Logged in Successfully');
+    }
     public function testUserLoginError()
     {
         $user = factory(User::class)->create();
