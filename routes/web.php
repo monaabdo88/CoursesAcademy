@@ -15,6 +15,9 @@ Route::get('/', function () {
     return view('index');
     //return new App\Mail\ConfirmYourEmail();
 });
+Route::prefix('admin')->group(function (){
+    Route::resource('/series','SeriesController');
+});
 Route::get('register/confirm/','ConfirmEmailController@index')->name('confirm-email');
 Auth::routes();
 
