@@ -17,18 +17,15 @@ class SeriesTest extends TestCase
         Storage::fake(config('filesystems.default'));
 
         $this->post('/admin/series', [
-            'title' => 'Vuejs for beginners',
-            'description' => 'the best vuejs cast ever',
-            'image' => UploadedFile::fake()->image('image-series.png')
-        ])->assertRedirect()
-            ->assertSessionHas('success', 'Series created successfully.');
-
+            'title' => 'test new series',
+            'description' => 'Test New series Added',
+            'image' => UploadedFile::fake()->image('test.png')
+        ])->assertRedirect();
         Storage::disk(config('filesystems.default'))->assertExists(
-            'series/' . str_slug('Vuejs for beginners') . '.png'
+            'series/' . str_slug('test new series') . '.png'
         );
-
         $this->assertDatabaseHas('series', [
-            'slug' => str_slug('Vuejs for beginners')
+            'slug' => str_slug('test new series')
         ]);
     }
 }
