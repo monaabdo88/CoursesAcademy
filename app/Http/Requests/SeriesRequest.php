@@ -25,7 +25,9 @@ class SeriesRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'title' => 'required|min:5',
+            'description' => 'required|min:10',
+            'image' => 'required|image'
         ];
     }
     public function UploadImg(){
@@ -37,11 +39,13 @@ class SeriesRequest extends FormRequest
     }
     public function store_series(){
         //create new series
-        Series::create([
+        $series = Series::create([
             'title' => $this->title,
             'description' => $this->description,
             'image_url' => 'series/'.$this->fileName,
             'slug' => str_slug($this->title)
         ]);
+        session()->flash('success','Series Created Successfully');
+        return redirect()->route('series.show',$series->slug);
     }
 }
