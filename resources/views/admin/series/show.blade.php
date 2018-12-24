@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('header')
     <!-- Header -->
-    <header class="header header-inverse bg-fixed" style="background-image: url(assets/img/bg-laptop.jpg)" data-overlay="8">
+    <header class="header header-inverse bg-fixed" style="background-image: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);">
         <div class="container text-center">
 
             <div class="row">
@@ -32,8 +32,7 @@
 
                 <div class="row gap-y">
                     <div class="col-md-12">
-
-
+                        <lessons-vue default_lessons="{{$series->lessons}}" series_id="{{$series->id}}"></lessons-vue>
 
                     </div>
 

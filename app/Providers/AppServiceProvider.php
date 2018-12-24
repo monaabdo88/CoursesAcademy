@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Series;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
