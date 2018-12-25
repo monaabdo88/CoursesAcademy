@@ -43800,6 +43800,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -43809,6 +43817,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         this.$on('lesson_created', function (lesson) {
             _this.lessons.push(lesson);
+        });
+        this.$on('lesson_updated', function (lesson) {
+            var lessonIndex = _this.lessons.findIndex(function (L) {
+                return lesson.id = L.id;
+            });
+            _this.lessons.splice(lessonIndex, 1, lesson);
         });
     },
 
@@ -43825,6 +43839,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     methods: {
         CreateNewLesson: function CreateNewLesson() {
             this.$emit('create_new_lesson', this.series_id);
+        },
+        deleteLesson: function deleteLesson(id, key) {
+            var _this2 = this;
+
+            if (confirm('Are You Sure you want to delete this lesson ?')) {
+                __WEBPACK_IMPORTED_MODULE_0_axios___default.a.delete("/admin/" + this.series_id + "/lessons/" + id).then(function (resp) {
+                    _this2.lessons.splice(key, 1);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        },
+        updateLesson: function updateLesson(lesson) {
+            var seriesId = this.series_id;
+            this.$emit('edit_lesson', { lesson: lesson, seriesId: seriesId });
         }
     }
 });
@@ -43884,6 +43913,9 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+//
 //
 //
 //
@@ -43920,6 +43952,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+
+var Lesson = function Lesson(lesson) {
+    _classCallCheck(this, Lesson);
+
+    this.title = lesson.title || "";
+    this.description = lesson.description || "";
+    this.video_id = lesson.video_id || "";
+    this.episode_number = lesson.episode_number || "";
+};
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     mounted: function mounted() {
@@ -43927,18 +43969,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         this.$parent.$on('create_new_lesson', function (seriesId) {
             _this.seriesId = seriesId;
-            console.log('Hello from create new lesson');
+            _this.edit = false;
+            _this.lesson = new Lesson({});
+            $('#createLessonModal').modal();
+        });
+        this.$parent.$on('edit_lesson', function (_ref) {
+            var lesson = _ref.lesson,
+                seriesId = _ref.seriesId;
+
+            _this.edit = true;
+            _this.seriesId = seriesId;
+            _this.lesson_id = lesson.id;
+            _this.lesson = new Lesson(lesson);
             $('#createLessonModal').modal();
         });
     },
     data: function data() {
         return {
-            title: '',
-            description: '',
-            video_id: '',
-            episode_number: '',
+            lesson: {},
             premium: true,
-            seriesId: ''
+            seriesId: '',
+            edit: false,
+            lesson_id: null
         };
     },
 
@@ -43946,18 +43998,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         CreateLesson: function CreateLesson() {
             var _this2 = this;
 
-            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/' + this.seriesId + '/lessons', {
-                title: this.title,
-                description: this.description,
-                video_id: this.video_id,
-                episode_number: this.episode_number,
-                series_id: this.seriesId
-            }).then(function (res) {
+            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/' + this.seriesId + '/lessons', this.lesson).then(function (res) {
                 _this2.$parent.$emit('lesson_created', res.data);
                 $("#createLessonModal").modal('hide');
             }).catch(function (error) {
                 console.log(error);
             });
+        },
+        updateLesson: function updateLesson() {
+            var _this3 = this;
+
+            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.put('/admin/' + this.seriesId + '/lessons/' + this.lesson_id, this.lesson).then(function (resp) {
+                $("#createLessonModal").modal('hide');
+                _this3.$parent.$emit('lesson_updated', resp.data);
+            }).catch(function (error) {});
         }
     }
 });
@@ -43995,19 +44049,19 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.title,
-                      expression: "title"
+                      value: _vm.lesson.title,
+                      expression: "lesson.title"
                     }
                   ],
                   staticClass: "form-control",
                   attrs: { type: "text", placeholder: "Lesson title" },
-                  domProps: { value: _vm.title },
+                  domProps: { value: _vm.lesson.title },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.title = $event.target.value
+                      _vm.$set(_vm.lesson, "title", $event.target.value)
                     }
                   }
                 })
@@ -44019,19 +44073,19 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.video_id,
-                      expression: "video_id"
+                      value: _vm.lesson.video_id,
+                      expression: "lesson.video_id"
                     }
                   ],
                   staticClass: "form-control",
                   attrs: { type: "text", placeholder: "Vimeo video id" },
-                  domProps: { value: _vm.video_id },
+                  domProps: { value: _vm.lesson.video_id },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.video_id = $event.target.value
+                      _vm.$set(_vm.lesson, "video_id", $event.target.value)
                     }
                   }
                 })
@@ -44043,19 +44097,23 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.episode_number,
-                      expression: "episode_number"
+                      value: _vm.lesson.episode_number,
+                      expression: "lesson.episode_number"
                     }
                   ],
                   staticClass: "form-control",
                   attrs: { type: "number", placeholder: "Episode number" },
-                  domProps: { value: _vm.episode_number },
+                  domProps: { value: _vm.lesson.episode_number },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.episode_number = $event.target.value
+                      _vm.$set(
+                        _vm.lesson,
+                        "episode_number",
+                        $event.target.value
+                      )
                     }
                   }
                 })
@@ -44067,20 +44125,20 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.description,
-                      expression: "description"
+                      value: _vm.lesson.description,
+                      expression: "lesson.description"
                     }
                   ],
                   staticClass: "form-control",
                   staticStyle: { resize: "none" },
                   attrs: { cols: "30", rows: "6" },
-                  domProps: { value: _vm.description },
+                  domProps: { value: _vm.lesson.description },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.description = $event.target.value
+                      _vm.$set(_vm.lesson, "description", $event.target.value)
                     }
                   }
                 })
@@ -44127,15 +44185,25 @@ var render = function() {
                 _c("span", [_vm._v("Premium Lesson!")])
               ]),
               _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary btn-block",
-                  attrs: { type: "button" },
-                  on: { click: _vm.CreateLesson }
-                },
-                [_vm._v("Create lesson")]
-              )
+              !_vm.edit
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary btn-block",
+                      attrs: { type: "button" },
+                      on: { click: _vm.CreateLesson }
+                    },
+                    [_vm._v("Create lesson")]
+                  )
+                : _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary btn-block",
+                      attrs: { type: "button" },
+                      on: { click: _vm.updateLesson }
+                    },
+                    [_vm._v("Save lesson")]
+                  )
             ])
           ])
         ])
@@ -44201,9 +44269,43 @@ var render = function() {
       _c(
         "ul",
         { staticClass: "list-group" },
-        _vm._l(_vm.lessons, function(lesson) {
+        _vm._l(_vm.lessons, function(lesson, key) {
           return _c("li", { staticClass: "list-group-item" }, [
-            _vm._v(_vm._s(lesson.title))
+            _c("div", { staticClass: "col-sm-8" }, [
+              _c("p", { staticClass: "text-left" }, [
+                _vm._v(_vm._s(lesson.title))
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-sm-4" }, [
+              _c("p", { staticClass: "pull-right" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary btn-xs",
+                    on: {
+                      click: function($event) {
+                        _vm.updateLesson(lesson)
+                      }
+                    }
+                  },
+                  [_vm._v("Edit")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger btn-xs",
+                    on: {
+                      click: function($event) {
+                        _vm.deleteLesson(lesson.id, key)
+                      }
+                    }
+                  },
+                  [_vm._v("Delete")]
+                )
+              ])
+            ])
           ])
         }),
         0

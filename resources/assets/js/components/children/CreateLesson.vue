@@ -11,21 +11,22 @@
                 <div class="modal-body">
                     <form id="newLessonForm">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Lesson title" v-model="title">
+                            <input type="text" class="form-control" placeholder="Lesson title" v-model="lesson.title">
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Vimeo video id" v-model="video_id">
+                            <input type="text" class="form-control" placeholder="Vimeo video id" v-model="lesson.video_id">
                         </div>
                         <div class="form-group">
-                            <input type="number" class="form-control" placeholder="Episode number" v-model="episode_number">
+                            <input type="number" class="form-control" placeholder="Episode number" v-model="lesson.episode_number">
                         </div>
                         <div class="form-group">
-                            <textarea cols="30" rows="6" class="form-control" style="resize: none;" v-model="description"></textarea>
+                            <textarea cols="30" rows="6" class="form-control" style="resize: none;" v-model="lesson.description"></textarea>
                         </div>
                         <div class="form-group pull-left">
                             <input type="checkbox" v-model="premium"><span>Premium Lesson!</span>
                         </div>
-                        <button type="button" class="btn btn-primary btn-block" @click="CreateLesson">Create lesson</button>
+                        <button type="button" class="btn btn-primary btn-block" @click="CreateLesson" v-if="!edit">Create lesson</button>
+                        <button type="button" class="btn btn-primary btn-block" @click="updateLesson" v-else="edit">Save lesson</button>
 
                     </form>
                 </div>
@@ -35,37 +36,54 @@
 </template>
 <script>
     import axios from 'axios'
+    class Lesson{
+        constructor(lesson){
+            this.title = lesson.title || ""
+            this.description = lesson.description || ""
+            this.video_id = lesson.video_id || ""
+            this.episode_number = lesson.episode_number || ""
+        }
+    }
     export default {
         mounted(){
             this.$parent.$on('create_new_lesson',(seriesId)=>{
                 this.seriesId = seriesId
-                console.log('Hello from create new lesson')
+                this.edit=false
+                this.lesson = new Lesson({})
+                $('#createLessonModal').modal()
+            })
+            this.$parent.$on('edit_lesson',({lesson,seriesId})=>{
+                this.edit=true
+                this.seriesId = seriesId
+                this.lesson_id = lesson.id
+                this.lesson = new Lesson(lesson)
                 $('#createLessonModal').modal()
             })
         },
         data(){
             return {
-                title:'',
-                description:'',
-                video_id:'',
-                episode_number:'',
+                lesson:{},
                 premium:true,
-                seriesId:''
+                seriesId:'',
+                edit:false,
+                lesson_id:null
             }
         },
         methods:{
             CreateLesson(){
-                axios.post('/admin/'+this.seriesId+'/lessons',{
-                    title:this.title,
-                    description:this.description,
-                    video_id:this.video_id,
-                    episode_number:this.episode_number,
-                    series_id:this.seriesId
-                }).then(res=>{
+                axios.post('/admin/'+this.seriesId+'/lessons',this.lesson).then(res=>{
                     this.$parent.$emit('lesson_created',res.data)
                     $("#createLessonModal").modal('hide')
                 }).catch(error=>{
                     console.log(error)
+                })
+            },
+            updateLesson(){
+                axios.put('/admin/'+this.seriesId+'/lessons/'+this.lesson_id,this.lesson).then(resp=>{
+                    $("#createLessonModal").modal('hide')
+                    this.$parent.$emit('lesson_updated',resp.data)
+                }).catch(error=>{
+
                 })
             }
         }

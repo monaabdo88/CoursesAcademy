@@ -4,7 +4,15 @@
             <button class="btn btn-primary" @click="CreateNewLesson">Create New Lesson</button>
         </h1>
         <ul class="list-group">
-            <li class="list-group-item" v-for="lesson in lessons">{{lesson.title}}</li>
+            <li class="list-group-item" v-for="lesson,key in lessons">
+                <div class="col-sm-8"><p class="text-left">{{lesson.title}}</p></div>
+                <div class="col-sm-4">
+                    <p class="pull-right">
+                            <button class="btn btn-primary btn-xs" @click="updateLesson(lesson)">Edit</button>
+                            <button class="btn btn-danger btn-xs" @click="deleteLesson(lesson.id,key)">Delete</button>
+                    </p>
+                </div>
+            </li>
         </ul>
         <create-lesson></create-lesson>
     </div>
@@ -16,6 +24,12 @@
         mounted(){
             this.$on('lesson_created',(lesson)=>{
                 this.lessons.push(lesson)
+            })
+            this.$on('lesson_updated',(lesson)=>{
+                let lessonIndex = this.lessons.findIndex(L=>{
+                    return lesson.id = L.id
+                })
+                this.lessons.splice(lessonIndex,1,lesson)
             })
         },
         components:{
@@ -32,7 +46,21 @@
         methods:{
             CreateNewLesson(){
                 this.$emit('create_new_lesson',this.series_id)
+            },
+            deleteLesson(id,key){
+                if(confirm('Are You Sure you want to delete this lesson ?')){
+                    axios.delete("/admin/"+this.series_id+"/lessons/"+id).then(resp=>{
+                        this.lessons.splice(key,1)
+                    }).catch(error=>{
+                        console.log(error)
+                    })
+                }
+            },
+            updateLesson(lesson){
+                let seriesId = this.series_id
+                this.$emit('edit_lesson',{lesson,seriesId})
             }
+
         }
     }
 </script>
