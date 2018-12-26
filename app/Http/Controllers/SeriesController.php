@@ -15,7 +15,8 @@ class SeriesController extends Controller
      */
     public function index()
     {
-        //
+        $series = Series::all();
+        return view('admin.series.index')->with('series',$series);
     }
 
     /**
@@ -60,7 +61,8 @@ class SeriesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $series = Series::findOrFail($id);
+        return view('admin.series.edit')->with('series',$series);
     }
 
     /**

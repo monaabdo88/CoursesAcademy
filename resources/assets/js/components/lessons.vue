@@ -23,11 +23,19 @@
         props:['default_lessons','series_id'],
         mounted(){
             this.$on('lesson_created',(lesson)=>{
+                window.noty({
+                    message:"Lesson Created Successfully",
+                    type:"success"
+                })
                 this.lessons.push(lesson)
             })
             this.$on('lesson_updated',(lesson)=>{
                 let lessonIndex = this.lessons.findIndex(L=>{
                     return lesson.id = L.id
+                })
+                window.noty({
+                    message:"Lesson Updated Successfully",
+                    type:"success"
                 })
                 this.lessons.splice(lessonIndex,1,lesson)
             })
@@ -51,8 +59,12 @@
                 if(confirm('Are You Sure you want to delete this lesson ?')){
                     axios.delete("/admin/"+this.series_id+"/lessons/"+id).then(resp=>{
                         this.lessons.splice(key,1)
+                        window.noty({
+                            message:"Lesson Removed Successfully",
+                            type:"success"
+                        })
                     }).catch(error=>{
-                        console.log(error)
+                        window.handelError(error)
                     })
                 }
             },

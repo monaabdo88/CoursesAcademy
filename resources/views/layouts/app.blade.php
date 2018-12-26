@@ -30,6 +30,7 @@
                     <div class="topbar-right">
                         <ul class="topbar-nav nav">
                             <li class="nav-item"><a class="nav-link" href="{{url('/')}}">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{url('/admin/series/')}}">All Series</a></li>
 
                             @if (Auth::guest())
                                 <li class="nav-item"><a class="nav-link" href="javascript:;" data-toggle="modal" data-target="#loginModal">Login</a></li>
@@ -64,6 +65,7 @@
             @if (Auth::guest())
                 <login-vue></login-vue>
             @endif
+        <vue-noty></vue-noty>
     </div>
     <!-- Footer -->
     <footer class="site-footer">

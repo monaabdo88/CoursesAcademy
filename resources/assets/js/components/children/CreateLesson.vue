@@ -74,8 +74,12 @@
                 axios.post('/admin/'+this.seriesId+'/lessons',this.lesson).then(res=>{
                     this.$parent.$emit('lesson_created',res.data)
                     $("#createLessonModal").modal('hide')
+                    window.noty({
+                        message:"Lesson Created Successfully",
+                        type:"success"
+                    })
                 }).catch(error=>{
-                    console.log(error)
+                    window.handelError(error)
                 })
             },
             updateLesson(){
@@ -83,7 +87,7 @@
                     $("#createLessonModal").modal('hide')
                     this.$parent.$emit('lesson_updated',resp.data)
                 }).catch(error=>{
-
+                    window.handelError(error)
                 })
             }
         }

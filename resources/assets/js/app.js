@@ -8,7 +8,22 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
-
+window.events = new Vue();
+window.noty = function (notification) {
+    window.events.$emit('notification',notification)
+}
+window.handelError = function(error){
+    if(error.response.status == 422){
+        window.noty({
+            message:"You had validation error",
+            type:"danger"
+        })
+    }
+    window.noty({
+        message:"Something wrong please try again",
+        type:"danger"
+    })
+}
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -17,6 +32,7 @@ window.Vue = require('vue');
 
 Vue.component('login-vue', require('./components/login.vue'));
 Vue.component('lessons-vue', require('./components/lessons.vue'));
+Vue.component('vue-noty', require('./components/noty.vue'));
 
 const app = new Vue({
     el: '#app'
