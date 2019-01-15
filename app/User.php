@@ -2,12 +2,14 @@
 
 namespace App;
 
+use App\Entities\Learning;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Redis;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, Learning;
 
     /**
      * The attributes that are mass assignable.
@@ -37,4 +39,5 @@ class User extends Authenticatable
     public function isAdmin(){
         return in_array($this->email,config('admin.admins'));
     }
+
 }

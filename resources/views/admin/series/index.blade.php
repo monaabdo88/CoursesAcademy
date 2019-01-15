@@ -45,7 +45,7 @@
                             @forelse($series as $serie)
                               <tr>
                                 <td>{{$serie->title}}</td>
-                                <td><a class="btn btn-warning">Edit</a></td>
+                                <td><a href="{{route('series.edit',$serie->slug)}}" class="btn btn-warning">Edit</a></td>
                                 <td><a href="" class="btn btn-danger">Delete</a></td>
                               </tr>
                                 @empty
@@ -55,6 +55,10 @@
                             @endforelse
                             </tbody>
                           </table>
+
+                           {{ $series->links("pagination::bootstrap-4") }}
+
+
                     </div>
 
                 </div>

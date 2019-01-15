@@ -34,100 +34,34 @@
 @section('content')
     <!-- Main container -->
     <main class="main-content">
-
-
-
-
-        <!--
-        |‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒
-        | More Header
-        |‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒
-        !-->
-        <section class="section" id="section-intro">
+        <section class="section bg-gray">
             <div class="container">
                 <header class="section-header">
-                    <small>Headers</small>
-                    <h2>More Headers</h2>
+                    <small>lessons</small>
+                    <h2>Featured Screencasts</h2>
                     <hr>
-                    <p class="lead">TheSaaS includes several header examples which can be use just by copy and paste the code</p>
+                    <p class="lead"></p>
                 </header>
+                @forelse($series as $s)
+                    <div class="card mb-30">
+                        <div class="row">
+                            <div class="col-12 col-md-4 align-self-center">
+                                <a href=""><img src="{{ asset($s->image_path) }}" alt="..."></a>
+                            </div>
 
+                            <div class="col-12 col-md-8">
+                                <div class="card-block">
+                                    <h4 class="card-title">{{ $s->title }}</h4>
 
-                <div class="row gap-y">
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <a class="text-center" href="header-color.html">
-                            <p><img class="shadow-2 hover-shadow-5" src="assets/img/header-color.jpg" alt="..."></p>
-                            <h6>Solid Color</h6>
-                        </a>
+                                    <p class="card-text">{{ $s->description }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <a class="text-center" href="header-gradient.html">
-                            <p><img class="shadow-2 hover-shadow-5" src="assets/img/header-gradient.jpg" alt="..."></p>
-                            <h6>Gradient</h6>
-                        </a>
-                    </div>
-
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <a class="text-center" href="header-particle.html">
-                            <p><img class="shadow-2 hover-shadow-5" src="assets/img/header-particle.jpg" alt="..."></p>
-                            <h6>Particle</h6>
-                        </a>
-                    </div>
-
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <a class="text-center" href="header-typing.html">
-                            <p><img class="shadow-2 hover-shadow-5" src="assets/img/header-typing.jpg" alt="..."></p>
-                            <h6>Typing Text</h6>
-                        </a>
-                    </div>
-
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <a class="text-center" href="header-image.html">
-                            <p><img class="shadow-2 hover-shadow-5" src="assets/img/header-image.jpg" alt="..."></p>
-                            <h6>Background Image</h6>
-                        </a>
-                    </div>
-
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <a class="text-center" href="header-video.html">
-                            <p><img class="shadow-2 hover-shadow-5" src="assets/img/header-video.jpg" alt="..."></p>
-                            <h6>Background Video</h6>
-                        </a>
-                    </div>
-
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <a class="text-center" href="header-parallax.html">
-                            <p><img class="shadow-2 hover-shadow-5" src="assets/img/header-parallax.jpg" alt="..."></p>
-                            <h6>Parallax</h6>
-                        </a>
-                    </div>
-
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <a class="text-center" href="header-slider.html">
-                            <p><img class="shadow-2 hover-shadow-5" src="assets/img/header-slider.jpg" alt="..."></p>
-                            <h6>Slider</h6>
-                        </a>
-                    </div>
-
-                </div>
-
-
+                @empty
+                @endforelse
             </div>
         </section>
-
-
-
-
-
 
     </main>
     <!-- END Main container -->

@@ -33,7 +33,7 @@
                 <div class="row gap-y">
                     <div class="col-md-12">
 
-                        <form action="{{route('series.update')}}" method="PUT" enctype="multipart/form-data">
+                        <form action="{{route('series.update',$series->slug)}}" method="POST" enctype="multipart/form-data">
                             {{csrf_field()}}
                             {{method_field('PUT')}}
                             <div class="form-group">
@@ -45,7 +45,7 @@
                             </div>
 
                             <div class="form-group">
-                                <textarea class="form-control form-control-lg" name="description" rows="4" >{{$series->descriptiom}}</textarea>
+                                <textarea class="form-control form-control-lg" name="description" rows="4" >{{$series->description}}</textarea>
                             </div>
 
 

@@ -23,7 +23,7 @@ class SeriesTest extends TestCase
             'image' => UploadedFile::fake()->image('test.png')
         ])->assertRedirect()->assertSessionHas('success','Series Created Successfully');
         Storage::disk(config('filesystems.default'))->assertExists(
-            'series/' . str_slug('test new series') . '.png'
+            'public/series/' . str_slug('test new series') . '.png'
         );
         $this->assertDatabaseHas('series', [
             'slug' => str_slug('test new series')

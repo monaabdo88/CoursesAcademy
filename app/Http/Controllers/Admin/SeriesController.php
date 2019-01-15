@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\SeriesRequest;
+use App\Http\Controllers\Controller;
+
+
+use App\Http\Requests\CreateSeriesRequest;
+use App\Http\Requests\UpdateSeriesRequest;
 use App\Series;
 use Illuminate\Http\Request;
 
@@ -15,7 +19,7 @@ class SeriesController extends Controller
      */
     public function index()
     {
-        $series = Series::all();
+        $series = Series::paginate(10);
         return view('admin.series.index')->with('series',$series);
     }
 
@@ -35,7 +39,7 @@ class SeriesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(SeriesRequest $request)
+    public function store(CreateSeriesRequest $request)
     {
         //Upload Image
         return $request->UploadImg()->store_series();
@@ -59,9 +63,8 @@ class SeriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Series $series)
     {
-        $series = Series::findOrFail($id);
         return view('admin.series.edit')->with('series',$series);
     }
 
@@ -72,9 +75,11 @@ class SeriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateSeriesRequest $request, Series $series)
     {
-        //
+        $request->updateSeries($series);
+        session()->flash('success', 'Successfully updated series');
+        return redirect()->route('series.index');
     }
 
     /**

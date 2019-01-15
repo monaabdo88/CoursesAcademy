@@ -2,50 +2,15 @@
 
 namespace App\Http\Requests;
 
-use App\Series;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SeriesRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
-    {
-        return [
-            'title' => 'required|min:5',
-            'description' => 'required|min:10',
-            'image' => 'required|image'
-        ];
-    }
     public function UploadImg(){
         //upload image
         $uploaded_img = $this->image;
         $this->fileName =  str_slug($this->title).'.'.$uploaded_img->getClientOriginalExtension();
-        $uploaded_img->storePubliclyAs('series',$this->fileName);
+        $uploaded_img->storePubliclyAs('public/series',$this->fileName);
         return $this;
-    }
-    public function store_series(){
-        //create new series
-        $series = Series::create([
-            'title' => $this->title,
-            'description' => $this->description,
-            'image_url' => 'series/'.$this->fileName,
-            'slug' => str_slug($this->title)
-        ]);
-        session()->flash('success','Series Created Successfully');
-        return redirect()->route('series.show',$series->slug);
     }
 }
