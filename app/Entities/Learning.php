@@ -1,5 +1,7 @@
 <?php
 namespace App\Entities;
+use App\Lesson;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redis;
 
 trait Learning{
@@ -13,9 +15,18 @@ trait Learning{
         return($numberOfCompletedLessons / $numberOfLessonInSeries) * 100 ;
     }
     public function getNumberOfCompletedLessonsForSeries($series){
-        return count(Redis::smembers("user:{$this->id}:series:{$series->id}"));
+        return count($this->getCompletedLessonsSeries($series));
+    }
+    public function getCompletedLessonsSeries($series){
+        return Redis::smembers("user:{$this->id}:series:{$series->id}");
     }
     public function hasStartedseries($series){
         return $this->getNumberOfCompletedLessonsForSeries($series) > 0;
+    }
+    public function getCompletedLesson($series){
+        $completedLesson = $this->getCompletedLessonsSeries($series);
+        return collect($completedLesson)->map(function($lessonId){
+            return Lesson::find($lessonId);
+        });
     }
 }
