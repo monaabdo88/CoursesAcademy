@@ -30,11 +30,11 @@
                             @endif
                     ></vue-player>
 
-                    <a @if($prevLesson->id !== $lesson->id) href="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $prevLesson->id]) }}"@endif data-toggle='popover' title='Previous Lesson'>
-                        <i class="fa fa-arrow-left fa-lg"></i>
+                    <a class="btn btn-primary" @if($prevLesson->id !== $lesson->id) href="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $prevLesson->id]) }}"@endif data-toggle='popover' title='Previous Lesson'>
+                        Previous Lesson
                     </a>
-                    <a @if($nextLesson->id !== $lesson->id) href="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $nextLesson->id]) }}" @endif data-toggle='popover' title='Next Lesson'>
-                        <i class="fa fa-arrow-right fa-lg"></i>
+                    <a class="btn btn-primary" @if($nextLesson->id !== $lesson->id) href="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $nextLesson->id]) }}" @endif data-toggle='popover' title='Next Lesson'>
+                        Next Lesson
                     </a>
 
                 </div>

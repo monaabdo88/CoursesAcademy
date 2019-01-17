@@ -24,8 +24,8 @@ class CreateSeriesRequest extends SeriesRequest
     public function rules()
     {
         return [
-            'title' => 'required|min:5',
-            'description' => 'required|min:10',
+            'title' => 'required',
+            'description' => 'required',
             'image' => 'required|image'
         ];
     }

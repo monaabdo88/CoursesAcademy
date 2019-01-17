@@ -1,11 +1,11 @@
 <template>
-    <div>
-        <div data-vimeo-id="19231868" :data-vimeo-width="lesson.video_id" v-if="lesson" id="handstick"></div>
-    </div>
+    <div :data-vimeo-id="lesson.video_id" data-vimeo-width="900" v-if="lesson" id="handstick"></div>
 </template>
+
 <script>
-    import Player from 'vimeo/player'
+    import videoPlayer from '@vimeo/player'
     export default {
+        name: "Player",
         props:['default_lesson'],
         data(){
             return{
@@ -13,7 +13,7 @@
             }
         },
         mounted(){
-            const player = new Player('handstick')
+            const player = new videoPlayer('handstick')
             player.on('play',()=>{
                 console.log('Player is now play on')
             })

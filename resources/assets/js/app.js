@@ -33,7 +33,7 @@ window.handelError = function(error){
 Vue.component('login-vue', require('./components/login.vue'));
 Vue.component('lessons-vue', require('./components/lessons.vue'));
 Vue.component('vue-noty', require('./components/noty.vue'));
-Vue.component('vimeo-player',require('./components/Player.vue'));
+Vue.component('vue-player', require('./components/Player'));
 
 const app = new Vue({
     el: '#app'

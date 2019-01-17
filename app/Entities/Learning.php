@@ -29,4 +29,11 @@ trait Learning{
             return Lesson::find($lessonId);
         });
     }
+    public function hasCompleteLesson($lesson)
+    {
+        return in_array(
+            $lesson->id,
+            $this->getCompletedLessonsSeries($lesson->series)
+        );
+    }
 }
