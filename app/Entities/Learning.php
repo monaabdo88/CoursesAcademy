@@ -9,14 +9,17 @@ trait Learning{
         //dd("user:{$this->id}:series:{$lesson->series->id}");
         Redis::sadd("user:{$this->id}:series:{$lesson->series->id}",$lesson->id);
     }
-    public function percentageCompleteForSeries($series){
-        $numberOfLessonInSeries = $series->lessons->count();
-        $numberOfCompletedLessons = $this->getNumberOfCompletedLessonsForSeries($series);
-        return($numberOfCompletedLessons / $numberOfLessonInSeries) * 100 ;
-    }
     public function getNumberOfCompletedLessonsForSeries($series){
         return count($this->getCompletedLessonsSeries($series));
     }
+    public function percentageCompletedOfSeries($series)
+    {
+        $TotalLessonsInSeries = $series->lessons->count();
+        $numberOfCompletedLessons = $this->getNumberOfCompletedLessonsForSeries($series);
+
+        return ($TotalLessonsInSeries / $numberOfCompletedLessons) * 100;
+    }
+
     public function getCompletedLessonsSeries($series){
         return Redis::smembers("user:{$this->id}:series:{$series->id}");
     }
