@@ -9,8 +9,12 @@ use Illuminate\Http\Request;
 class WatchSeriesController extends Controller
 {
     public function index(Series $series){
-        return redirect()->route('series.watch',
-            ['series'=>$series->slug,'lesson'=>$series->lessons()->first()->id]);
+        $user = auth()->user();
+        if($user->hasStartedseries($series)){
+            return redirect()->route('series.watch',
+                ['series'=>$series->slug,
+                    'lesson'=>$user->getNextLesson($series)]);
+        }
     }
     public function showLesson(Series $series,Lesson $lesson){
         return view('watch',[

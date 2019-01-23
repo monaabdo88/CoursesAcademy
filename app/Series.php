@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Series extends Model
 {
     protected $guarded = [];
-    protected $with = ['lessons'];
-    public function lessons(){
+    public function lessons()
+    {
         return $this->hasMany(Lesson::class);
     }
+
+    protected $with = ['lessons'];
+
+
     public function getRouteKeyName()
     {
         return 'slug';

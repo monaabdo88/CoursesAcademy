@@ -30,30 +30,32 @@
                     <div class="topbar-right">
                         <ul class="topbar-nav nav">
                             <li class="nav-item"><a class="nav-link" href="{{url('/')}}">Home</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{url('/admin/series/')}}">All Series</a></li>
-
-                            @if (Auth::guest())
-                                <li class="nav-item"><a class="nav-link" href="javascript:;" data-toggle="modal" data-target="#loginModal">Login</a></li>
-                                <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Register</a></li>
-                            @else
+                            @auth
+                                @admin
+                                <li class="nav-item"><a href="{{route('series.index')}}" class="nav-link">All series</a></li>
+                                <li class="nav-item"><a href="{{route('series.create')}}" class="nav-link">Create series</a></li>
+                                @endadmin
                                 <li class="nav-item">
                                     <a class="nav-link" href="#" class="nav-link">
                                         {{ Auth::user()->name }} <i class="fa fa-caret-down"></i>
                                     </a>
 
                                     <div class="nav-submenu">
-                                            <a class="nav-link" href="{{ route('logout') }}"
-                                               onclick="event.preventDefault();
+                                        <a class="nav-link" href="{{ route('logout') }}"
+                                           onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                                Logout
-                                            </a>
+                                            Logout
+                                        </a>
 
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                                {{ csrf_field() }}
-                                            </form>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                            {{ csrf_field() }}
+                                        </form>
                                     </div>
                                 </li>
-                            @endif
+                            @endauth
+                            @guest
+                                <li class="nav-item"><a href="javascript:;" class="nav-link" data-toggle="modal" data-target="#authModal">Login / Register</a></li>
+                            @endguest
                         </ul>
                     </div>
 

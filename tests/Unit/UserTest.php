@@ -99,4 +99,70 @@ class UserTest extends TestCase
         $this->assertTrue($user->hasCompleteLesson($lesson));
         $this->assertFalse($user->hasCompleteLesson($lesson2));
     }
+    public function test_user_has_been_complete_series(){
+        $this->flushRedis();
+        $user = factory(User::class)->create();
+        $lesson1 = factory(Lesson::class)->create();
+        $lesson2 = factory(Lesson::class)->create(['series_id' => $lesson1->series->id]);
+        $lesson3 = factory(Lesson::class)->create(['series_id' => $lesson1->series->id]);
+        $user->completeLesson($lesson1);
+        $user->completeLesson($lesson2);
+        $completedLessons = $user->getCompletedLesson($lesson1->series);
+        $this->assertInstanceOf(Collection::class, $completedLessons);
+        $this->assertInstanceOf(Lesson::class, $completedLessons->random());
+
+        $completedLessonsIds = $completedLessons->pluck('id')->all();
+        $this->assertTrue(in_array($lesson1->id, $completedLessonsIds));
+        $this->assertTrue(in_array($lesson2->id, $completedLessonsIds));
+        $this->assertFalse(in_array($lesson3->id, $completedLessonsIds));
+
+    }
+    public function test_get_number_of_lessons_completed(){
+        $this->flushRedis();
+        //user
+        $user = factory(User::class)->create();
+        //lesson
+        $lesson = factory(Lesson::class)->create();
+        $lesson2 = factory(Lesson::class)->create([
+            'series_id' => 1
+        ]);
+        $lesson3 = factory(Lesson::class)->create();
+        $lesson4 = factory(Lesson::class)->create([
+            'series_id' => 2
+        ]);
+        $lesson5 = factory(Lesson::class)->create();
+        $user->completeLesson($lesson);
+        $user->completeLesson($lesson3);
+        $user->completeLesson($lesson5);
+        $this->assertEquals(3,$user->getTotalNumberOfCompletedLessons());
+    }
+    public function test_can_get_next_lesson_to_be_watched_by_user(){
+        $this->flushRedis();
+
+        $user = factory(User::class)->create();
+        $lesson1 = factory(Lesson::class)->create([
+            'episode_number' => 100
+        ]);
+        $lesson2 = factory(Lesson::class)->create([
+            'series_id' => $lesson1->series->id,
+            'episode_number' => 200
+        ]);
+        $lesson3 = factory(Lesson::class)->create([
+            'series_id' => $lesson1->series->id,
+            'episode_number' => 300
+        ]);
+        $lesson4 = factory(Lesson::class)->create([
+            'series_id' => $lesson1->series->id,
+            'episode_number' => 400
+        ]);
+
+        $user->completeLesson($lesson1);
+        $user->completeLesson($lesson2);
+
+        $this->assertEquals($lesson3->id, $user->getNextLessonToWatch($lesson1->series)->id);
+
+        $user->completeLesson($lesson3);
+        $this->assertEquals($lesson4->id, $user->getNextLessonToWatch($lesson1->series)->id);
+
+    }
 }

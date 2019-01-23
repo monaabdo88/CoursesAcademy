@@ -22,6 +22,7 @@
                 $nextLesson = $lesson->getNextLesson();
                 $prevLesson = $lesson->getPreviousLesson();
             @endphp
+            
             <div class="row gap-y">
                 <div class="col-12 text-center">
                     <vue-player default_lesson="{{ $lesson }}"
@@ -29,14 +30,16 @@
                                 next_lesson_url="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $nextLesson->id]) }}"
                             @endif
                     ></vue-player>
-
-                    <a class="btn btn-primary" @if($prevLesson->id !== $lesson->id) href="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $prevLesson->id]) }}"@endif data-toggle='popover' title='Previous Lesson'>
-                        Previous Lesson
-                    </a>
-                    <a class="btn btn-primary" @if($nextLesson->id !== $lesson->id) href="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $nextLesson->id]) }}" @endif data-toggle='popover' title='Next Lesson'>
-                        Next Lesson
-                    </a>
-
+                    @if($prevLesson->id !== $lesson->id)
+                        <a class="btn btn-primary" href="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $prevLesson->id]) }}" data-toggle='popover' title='Previous Lesson'>
+                            Previous Lesson
+                        </a>
+                    @endif
+                    @if($nextLesson->id !== $lesson->id)
+                        <a class="btn btn-primary" href="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $nextLesson->id]) }}" data-toggle='popover' title='Next Lesson'>
+                            Next Lesson
+                        </a>
+                    @endif
                 </div>
                 <div class="col-12">
                     <ul class="list-group">
