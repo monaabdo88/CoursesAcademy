@@ -54,7 +54,7 @@
                                 </li>
                             @endauth
                             @guest
-                                <li class="nav-item"><a href="javascript:;" class="nav-link" data-toggle="modal" data-target="#authModal">Login / Register</a></li>
+                                <li class="nav-item"><a href="javascript:;" class="nav-link" data-toggle="modal" data-target="#loginModal">Login / Register</a></li>
                             @endguest
                         </ul>
                     </div>

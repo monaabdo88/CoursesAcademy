@@ -12,7 +12,7 @@ window.events = new Vue();
 window.noty = function (notification) {
     window.events.$emit('notification',notification)
 }
-window.handelError = function(error){
+window.handleErrors = function(error){
     if(error.response.status == 422){
         window.noty({
             message:"You had validation error",

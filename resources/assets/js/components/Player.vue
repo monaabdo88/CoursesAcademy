@@ -3,6 +3,7 @@
 </template>
 
 <script>
+
     import axios from 'axios'
     import videoPlayer from '@vimeo/player'
     import swal from 'sweetalert'
@@ -16,26 +17,43 @@
             }
         },
         methods:{
-            displayEndedVideoAlert(){
-                if(this.next_lesson_url) {
-                    Swal('Yaaa ! yu had finsih this lesson').then(() => {
+            displayVideoEndedAlert(){
+                if (this.next_lesson_url) {
+                    swal({
+                        title: 'Good job!',
+                        text: 'You completed this lesson, let\'s see what is next?!',
+                        icon: "success",
+                        buttons: false,
+                        timer: 3000
+                    }).then(() => {
                         window.location = this.next_lesson_url
                     })
                 }else{
-                    Swal('Yaaa ! yu had finsih this lesson')
+                    swal({
+                        title: 'Great job!',
+                        text: 'You completed this Series!',
+                        icon: "success",
+                        buttons: false,
+                        timer: 3000
+                    })
                 }
             },
             completeLesson(){
-                Axios.post(`series/complete-lesson/${this.lesson.id}`).then(resp => {
-                    this.displayEndedVideoAlert()
-                });
+                axios.post(`/series/complete-lesson/${this.lesson.id}`, {}).then(resp => {
+                    this.displayVideoEndedAlert()
+                })
             }
         },
         mounted(){
             const player = new videoPlayer('handstick')
-            player.on('ended',()=>{
-                this.completeLesson();
+
+            player.on('ended', () => {
+                this.completeLesson()
             })
         }
     }
 </script>
+
+<style scoped>
+
+</style>

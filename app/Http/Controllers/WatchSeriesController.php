@@ -10,11 +10,18 @@ class WatchSeriesController extends Controller
 {
     public function index(Series $series){
         $user = auth()->user();
-        if($user->hasStartedseries($series)){
-            return redirect()->route('series.watch',
-                ['series'=>$series->slug,
-                    'lesson'=>$user->getNextLesson($series)]);
+
+        if ($user->hasStartedseries($series)){
+            return redirect()->route('series.watch', [
+                'series' => $series->slug,
+                'lesson' => $user->getNextLessonToWatch($series)
+            ]);
         }
+
+        return redirect()->route('series.watch', [
+            'series' => $series->slug,
+            'lesson' => $series->lessons->first()->id
+        ]);
     }
     public function showLesson(Series $series,Lesson $lesson){
         return view('watch',[
